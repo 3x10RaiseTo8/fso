@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import personsServices from "./services/persons";
+import "./index.css";
 
 const TextBox = ({ label, value, handleChange }) => {
   return (
@@ -73,11 +74,27 @@ const Persons = ({ persons, filter, handleDelete }) => {
   ));
 };
 
+const SuccessNotification = ({ message }) => {
+  if (message === null) {
+    return null;
+  }
+  return <div className="success">{message}</div>;
+};
+
+const ErrorNotification = ({ message }) => {
+  if (message === null) {
+    return null;
+  }
+  return <div className="error">{message}</div>;
+};
+
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [newFilter, setNewFilter] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
 
   useEffect(() => {
     console.log("Effect in place");
@@ -101,17 +118,35 @@ const App = () => {
           `${newName} already in phonebook. Replace old number with new one?`
         )
       ) {
-        personsServices.updatePerson(found.id, newObject).then((response) => {
-          setPersons(
-            persons.map((p) => (found.id === p.id ? response.data : p))
-          );
-          setNewName("");
-          setNewNumber("");
-        });
+        personsServices
+          .updatePerson(found.id, newObject)
+          .then((response) => {
+            setPersons(
+              persons.map((p) => (found.id === p.id ? response.data : p))
+            );
+            setSuccessMessage(
+              `${response.data.name} has been updated successfully!`
+            );
+            setTimeout(() => {
+              setSuccessMessage(null);
+            }, 5000);
+            setNewName("");
+            setNewNumber("");
+          })
+          .catch((error) => {
+            setErrorMessage(`"${found.name}" was already removed from server`);
+            setTimeout(() => {
+              setErrorMessage(null);
+            }, 5000);
+          });
       }
     } else {
       personsServices.createPerson(newObject).then((response) => {
         setPersons(persons.concat(response.data));
+        setSuccessMessage(`${response.data.name} has been added successfully!`);
+        setTimeout(() => {
+          setSuccessMessage(null);
+        }, 5000);
         setNewName("");
         setNewNumber("");
       });
@@ -135,9 +170,11 @@ const App = () => {
 
   return (
     <>
-      <h2>Phonebook</h2>
+      <h1>Phonebook</h1>
+      <ErrorNotification message={errorMessage} />
+      <SuccessNotification message={successMessage} />
       <Filter value={newFilter} handleChange={handleFilterChange} />
-      <h2>Add a new</h2>
+      <h1>Add a new</h1>
       <PersonForm
         newName={newName}
         newNumber={newNumber}
@@ -145,7 +182,7 @@ const App = () => {
         handleNumberChange={handleNumberChange}
         handleAdd={handleAdd}
       />
-      <h2>Numbers</h2>
+      <h1>Numbers</h1>
       <Persons
         persons={persons}
         filter={newFilter}
