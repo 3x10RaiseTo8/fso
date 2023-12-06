@@ -134,6 +134,7 @@ const App = () => {
             setNewNumber("");
           })
           .catch((error) => {
+            console.log(error);
             setErrorMessage(`"${found.name}" was already removed from server`);
             setTimeout(() => {
               setErrorMessage(null);
