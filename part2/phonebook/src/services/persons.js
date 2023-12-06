@@ -18,8 +18,8 @@ const updatePerson = (id, newObject) => {
 };
 
 export default {
-  getAll: getAll,
-  createPerson: createPerson,
-  deletePerson: deletePerson,
-  updatePerson: updatePerson,
+  getAll,
+  createPerson,
+  deletePerson,
+  updatePerson,
 };
