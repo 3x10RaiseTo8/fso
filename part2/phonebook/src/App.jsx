@@ -135,22 +135,33 @@ const App = () => {
           })
           .catch((error) => {
             console.log(error);
-            setErrorMessage(`"${found.name}" was already removed from server`);
+            setErrorMessage(error.response.data.error);
             setTimeout(() => {
               setErrorMessage(null);
             }, 5000);
           });
       }
     } else {
-      personsServices.createPerson(newObject).then((response) => {
-        setPersons(persons.concat(response.data));
-        setSuccessMessage(`${response.data.name} has been added successfully!`);
-        setTimeout(() => {
-          setSuccessMessage(null);
-        }, 5000);
-        setNewName("");
-        setNewNumber("");
-      });
+      personsServices
+        .createPerson(newObject)
+        .then((response) => {
+          setPersons(persons.concat(response.data));
+          setSuccessMessage(
+            `${response.data.name} has been added successfully!`
+          );
+          setTimeout(() => {
+            setSuccessMessage(null);
+          }, 5000);
+          setNewName("");
+          setNewNumber("");
+        })
+        .catch((error) => {
+          console.log(error.response.data.error);
+          setErrorMessage(error.response.data.error);
+          setTimeout(() => {
+            setErrorMessage(null);
+          }, 5000);
+        });
     }
   };
 
