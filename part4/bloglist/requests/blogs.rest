@@ -9,5 +9,5 @@ Content-Type: application/json
     "title": "First blog",
     "author": "me",
     "url": "lol",
-    "likes": 999999999999999999
+    "likes": 999999999999999
 }
