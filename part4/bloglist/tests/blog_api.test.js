@@ -35,6 +35,27 @@ test('id is not _id', async () => {
   expect(blog.__v).not.toBeDefined();
 });
 
+test('post a new blog', async () => {
+  const newBlog = {
+    title: 'Fake blog',
+    author: 'Fake author',
+    url: 'fake.blog.com/opp',
+    likes: 0,
+  };
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/);
+
+  const response = await api.get('/api/blogs');
+  expect(response.body).toHaveLength(helper.testBlogs.length + 1);
+
+  const titles = response.body.map((blog) => blog.title);
+  expect(titles).toContain('Fake blog');
+});
+
 afterAll(async () => {
   await mongoose.connection.close();
 });
