@@ -14,8 +14,22 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:3003/api/blogs/658d60952fefb7298361d90f HTTP/1.1
+DELETE http://localhost:3003/api/blogs/658d60cf2fefb7298361d918 HTTP/1.1
 
 ###
 
 GET http://localhost:3003/api/blogs/658c8b9ade60d9e841f9fd1c HTTP/1.1
+
+###
+
+PUT http://localhost:3003/api/blogs/658c8b9ade60d9e841f9fd1c
+Content-Type: : application/json; 
+
+{
+    "title": "Updated first Blog",
+    "author": "Update bot",
+    "url": "update.blog.com/lol",
+    "likes": 432
+}
+
+###
