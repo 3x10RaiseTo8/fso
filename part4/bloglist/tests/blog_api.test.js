@@ -6,6 +6,7 @@ const helper = require('./test_helper');
 
 const api = supertest(app);
 
+// Loading the database with test blogs
 beforeEach(async () => {
   await Blog.deleteMany({});
 
@@ -19,6 +20,7 @@ beforeEach(async () => {
   // Promise.all(promiseArray);
 });
 
+// Tests starts from here
 test('All blogs are returned as JSON', async () => {
   const response = await api
     .get('/api/blogs')
@@ -56,6 +58,17 @@ test('post a new blog', async () => {
   expect(titles).toContain('Fake blog');
 });
 
+test('likes value defaults to 0 if not provided in req', async () => {
+  const newBlog = {
+    title: 'Like 0',
+    author: 'z',
+    url: 'zerolike.blog.com/opp',
+  };
+  const response = await api.post('/api/blogs').send(newBlog);
+  expect(response.body.likes).toBe(0);
+});
+
+// Closing the mongoose connection
 afterAll(async () => {
   await mongoose.connection.close();
 });
