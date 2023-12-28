@@ -68,6 +68,24 @@ test('likes value defaults to 0 if not provided in req', async () => {
   expect(response.body.likes).toBe(0);
 });
 
+test('url missing', async () => {
+  const newBlog = {
+    author: 'Anon',
+    title: 'Reject this',
+    likes: 2343,
+  };
+  await api.post('/api/blogs').send(newBlog).expect(400);
+});
+
+test('title missing', async () => {
+  const newBlog = {
+    author: 'Anon',
+    url: 'anon.blog.com/opp',
+    likes: 2,
+  };
+  await api.post('/api/blogs').send(newBlog).expect(400);
+});
+
 // Closing the mongoose connection
 afterAll(async () => {
   await mongoose.connection.close();
