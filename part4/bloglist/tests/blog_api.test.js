@@ -9,11 +9,12 @@ const api = supertest(app);
 // Loading the database with test blogs
 beforeEach(async () => {
   await Blog.deleteMany({});
+  await Blog.insertMany(helper.testBlogs);
 
-  for (let blog of helper.testBlogs) {
-    let blogObj = new Blog(blog);
-    await blogObj.save();
-  }
+  // for (let blog of helper.testBlogs) {
+  //   let blogObj = new Blog(blog);
+  //   await blogObj.save();
+  // }
 
   // const blogObjects = helper.testBlogs.map((blog) => new Blog(blog));
   // const promiseArray = blogObjects.map((blog) => blog.save());
@@ -84,6 +85,30 @@ test('title missing', async () => {
     likes: 2,
   };
   await api.post('/api/blogs').send(newBlog).expect(400);
+});
+
+test('delete a blog', async () => {
+  const initialBlogs = await helper.blogsInDb();
+  const idToDelete = initialBlogs[0].id;
+
+  await api.delete(`/api/blogs/${idToDelete}`).expect(204);
+  const response = await api.get('/api/blogs');
+  expect(response.body.length).toBe(initialBlogs.length - 1);
+});
+
+test('Update a blog', async () => {
+  const initialBlogs = await helper.blogsInDb();
+  const idToUpdate = initialBlogs[1].id;
+
+  const blogUpdate = {
+    author: 'New author',
+    title: 'Test is successful',
+    url: 'test.blog.com/success',
+    likes: 988999,
+  };
+  await api.put(`/api/blogs/${idToUpdate}`).send(blogUpdate).expect(200);
+  const response = await api.get(`/api/blogs/${idToUpdate}`);
+  expect(response.body.title).toBe('Test is successful');
 });
 
 // Closing the mongoose connection
