@@ -1,9 +1,17 @@
 GET http://localhost:3003/api/blogs HTTP/1.1
 
 ###
+POST http://localhost:3003/api/login HTTP/1.1
+Content-Type: application/json
 
+{
+    "username": "secod",
+    "password": "password"
+}
+
+###
 POST http://localhost:3003/api/blogs HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNlY29kIiwiaWQiOiI2NTk4YjVhZjBjOTQ0ZmUwN2IyMTI3NWQiLCJpYXQiOjE3MDQ1MDY5NTAsImV4cCI6MTcwNDU5MzM1MH0.5-XFAqiu8mvLScDaAhHa8zP7bwgMpz6zeoKsuBpAEuA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNlY29kIiwiaWQiOiI2NTk4YjVhZjBjOTQ0ZmUwN2IyMTI3NWQiLCJpYXQiOjE3MDQ1NzA5ODksImV4cCI6MTcwNDY1NzM4OX0.ogHjIHTkiKe19_0s4zjPF3ngsEOJmmamry0RKM9WLxw
 Content-Type: application/json
 
 {
@@ -15,7 +23,8 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:3003/api/blogs/6598952436731709877374e9 HTTP/1.1
+DELETE http://localhost:3003/api/blogs/6598b7254734e2fe3894188e HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNlY29kIiwiaWQiOiI2NTk4YjVhZjBjOTQ0ZmUwN2IyMTI3NWQiLCJpYXQiOjE3MDQ1NzA5ODksImV4cCI6MTcwNDY1NzM4OX0.ogHjIHTkiKe19_0s4zjPF3ngsEOJmmamry0RKM9WLxw
 
 ###
 
