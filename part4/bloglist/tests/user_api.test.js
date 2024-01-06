@@ -2,7 +2,7 @@ const supertest = require('supertest');
 const app = require('../app');
 const helper = require('./test_helper');
 const User = require('../models/user');
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 
 const api = supertest(app);
 

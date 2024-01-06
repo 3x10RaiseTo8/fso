@@ -16,7 +16,7 @@
   "author": "Abhishek Singh",
   "license": "ISC",
   "dependencies": {
-    "bcryptjs": "^2.4.3",
+    "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "express": "^4.18.2",
