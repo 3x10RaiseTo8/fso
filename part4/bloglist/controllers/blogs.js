@@ -9,9 +9,10 @@ blogsRouter.get('/', async (request, response) => {
 });
 
 blogsRouter.post('/', async (request, response) => {
-  const { title, author, url, likes = 0, token } = request.body;
+  const { title, author, url, likes = 0 } = request.body;
 
-  const decodedToken = jwt.verify(token, process.env.SECRET);
+  console.log(request.token);
+  const decodedToken = jwt.verify(request.token, process.env.SECRET);
   if (!decodedToken.id) {
     return response.status(401).json({ error: 'invalid token' });
   }

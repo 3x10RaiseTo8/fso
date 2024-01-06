@@ -3,6 +3,7 @@ GET http://localhost:3003/api/blogs HTTP/1.1
 ###
 
 POST http://localhost:3003/api/blogs HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNlY29kIiwiaWQiOiI2NTk4YjVhZjBjOTQ0ZmUwN2IyMTI3NWQiLCJpYXQiOjE3MDQ1MDY5NTAsImV4cCI6MTcwNDU5MzM1MH0.5-XFAqiu8mvLScDaAhHa8zP7bwgMpz6zeoKsuBpAEuA
 Content-Type: application/json
 
 {
@@ -14,7 +15,7 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:3003/api/blogs/6594d223faff261ff571c4ff HTTP/1.1
+DELETE http://localhost:3003/api/blogs/6598952436731709877374e9 HTTP/1.1
 
 ###
 
