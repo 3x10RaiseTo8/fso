@@ -1,21 +1,15 @@
 const blogsRouter = require('express').Router();
-const User = require('../models/user');
 const Blog = require('../models/blog');
-const jwt = require('jsonwebtoken');
+const middleware = require('../utils/middleware');
 
 blogsRouter.get('/', async (request, response) => {
   const blogs = await Blog.find({}).populate('user', { name: 1, username: 1 });
   response.json(blogs);
 });
 
-blogsRouter.post('/', async (request, response) => {
+blogsRouter.post('/', middleware.userExtractor, async (request, response) => {
   const { title, author, url, likes = 0 } = request.body;
-
-  const decodedToken = jwt.verify(request.token, process.env.SECRET);
-  if (!decodedToken.id) {
-    return response.status(401).json({ error: 'invalid token' });
-  }
-  const user = await User.findById(decodedToken.id);
+  const user = request.user;
 
   const blogObject = new Blog({
     title,
@@ -43,19 +37,19 @@ blogsRouter.get('/:id', async (request, response) => {
   response.json(blog);
 });
 
-blogsRouter.delete('/:id', async (request, response) => {
-  const decodedToken = jwt.verify(request.token, process.env.SECRET);
-  if (!decodedToken.id) {
-    return response.status(401).json({ error: 'invalid token' });
+blogsRouter.delete(
+  '/:id',
+  middleware.userExtractor,
+  async (request, response) => {
+    const user = request.user;
+    const blog = await Blog.findById(request.params.id);
+    if (blog.user.toString() !== user.id.toString()) {
+      return response.status(403).json({ error: 'invalid token' });
+    }
+    await Blog.findByIdAndDelete(blog.id);
+    return response.status(204).end();
   }
-  const blog = await Blog.findById(request.params.id);
-  const user = await User.findById(decodedToken.id);
-  if (blog.user.toString() !== user.id.toString()) {
-    return response.status(403).json({ error: 'invalid token' });
-  }
-  await Blog.findByIdAndDelete(blog.id);
-  return response.status(204).end();
-});
+);
 
 blogsRouter.put('/:id', async (request, response) => {
   const { title, author, url, likes = 0 } = request.body;
