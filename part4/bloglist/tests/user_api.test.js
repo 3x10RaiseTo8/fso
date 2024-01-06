@@ -1,19 +1,12 @@
 const supertest = require('supertest');
 const app = require('../app');
 const helper = require('./test_helper');
-const User = require('../models/user');
-const bcrypt = require('bcrypt');
 
 const api = supertest(app);
 
 describe('when there is one user in database', () => {
   beforeEach(async () => {
-    await User.deleteMany({});
-
-    const passwordHash = await bcrypt.hash('testpassword', 10);
-    const user = new User({ username: 'test0', passwordHash });
-
-    await user.save();
+    await helper.deleteAllAndCreateTestUser();
   });
 
   test('fresh user is created', async () => {
