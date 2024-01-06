@@ -72,7 +72,11 @@ describe('update', () => {
       url: 'test.blog.com/success',
       likes: 988999,
     };
-    await api.put(`/api/blogs/${idToUpdate}`).send(blogUpdate).expect(200);
+    await api
+      .put(`/api/blogs/${idToUpdate}`)
+      .send(blogUpdate)
+      .set('Authorization', token)
+      .expect(200);
     const response = await api.get(`/api/blogs/${idToUpdate}`);
     expect(response.body.title).toBe('Test is successful');
   });
