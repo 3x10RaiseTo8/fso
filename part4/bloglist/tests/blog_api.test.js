@@ -7,6 +7,8 @@ const helper = require('./test_helper');
 const api = supertest(app);
 
 let token;
+const invalidToken =
+  'Bearer eyJhbGciOiJIUzI1NiIsInR5eCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNlY29kIiwiaWQiOiI2NTk4YjVhZjBjOTQ0ZmUwN2IyMTI3NWQiLCJpYXQiOjE3MDQ1NzA5ODksImV4cCI6MTcwNDY1NzM4OX0.ogHjIHTkiKe19_0s4zjPF3ngsEOJmmamry0RKM9WLxw';
 
 // Loading the database with test blogs
 beforeEach(async () => {
@@ -42,12 +44,23 @@ describe('get', () => {
     const response = await api.get('/api/blogs');
     const blog = response.body[0];
     expect(blog.id).toBeDefined();
+    expect(blog.user).toBeDefined();
     expect(blog._id).not.toBeDefined();
     expect(blog.__v).not.toBeDefined();
   });
 });
 
 describe('delete', () => {
+  test('when invalid token is provided', async () => {
+    const initialBlogs = await helper.blogsInDb();
+    const idToDelete = initialBlogs[0].id;
+
+    await api
+      .delete(`/api/blogs/${idToDelete}`)
+      .set('Authorization', invalidToken)
+      .expect(401);
+  });
+
   test('delete a blog', async () => {
     const initialBlogs = await helper.blogsInDb();
     const idToDelete = initialBlogs[0].id;
@@ -62,16 +75,27 @@ describe('delete', () => {
 });
 
 describe('update', () => {
+  const blogUpdate = {
+    author: 'New author',
+    title: 'Test is successful',
+    url: 'test.blog.com/success',
+    likes: 988999,
+  };
+
+  test('if invalid token is provided', async () => {
+    const initialBlogs = await helper.blogsInDb();
+    const idToUpdate = initialBlogs[1].id;
+    await api
+      .put(`/api/blogs/${idToUpdate}`)
+      .send(blogUpdate)
+      .set('Authorization', invalidToken)
+      .expect(401);
+  });
+
   test('Update a blog', async () => {
     const initialBlogs = await helper.blogsInDb();
     const idToUpdate = initialBlogs[1].id;
 
-    const blogUpdate = {
-      author: 'New author',
-      title: 'Test is successful',
-      url: 'test.blog.com/success',
-      likes: 988999,
-    };
     await api
       .put(`/api/blogs/${idToUpdate}`)
       .send(blogUpdate)
@@ -89,7 +113,18 @@ describe('post', () => {
     url: 'fake.blog.com/opp',
     likes: 2323,
   };
-  test('if token is not provided', async () => {});
+
+  test('if token is not provided', async () => {
+    await api.post('/api/blogs').send(newBlog).expect(401);
+  });
+
+  test('if invalid token is provide', async () => {
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .set('Authorization', invalidToken)
+      .expect(401);
+  });
 
   test('post a new blog', async () => {
     await api
