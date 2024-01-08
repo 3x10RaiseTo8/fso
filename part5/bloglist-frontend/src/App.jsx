@@ -53,8 +53,23 @@ const App = () => {
 
   const handleCreate = async (e) => {
     e.preventDefault();
-    const response = await blogService.createBlog({ title, author, url });
-    setBlogs(blogs.concat(response));
+    try {
+      const response = await blogService.createBlog({ title, author, url });
+      setBlogs(blogs.concat(response));
+      setSuccessMessage(
+        `A new blog "${response.title}" by "${
+          response.author || 'Unknown'
+        }" has been created`
+      );
+      setTimeout(() => {
+        setSuccessMessage(null);
+      }, 3000);
+    } catch (exception) {
+      setErrorMessage(exception.response.data.error);
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 3000);
+    }
   };
 
   useEffect(() => {
@@ -72,13 +87,18 @@ const App = () => {
 
   if (!user) {
     return (
-      <LoginForm
-        username={username}
-        password={password}
-        handleLogin={handleLogin}
-        handleUsernameChange={handleUsernameChange}
-        handlePasswordChange={handlePasswordChange}
-      />
+      <div>
+        {errorMessage && (
+          <Notification message={errorMessage} className="error" />
+        )}
+        <LoginForm
+          username={username}
+          password={password}
+          handleLogin={handleLogin}
+          handleUsernameChange={handleUsernameChange}
+          handlePasswordChange={handlePasswordChange}
+        />
+      </div>
     );
   }
   return (
