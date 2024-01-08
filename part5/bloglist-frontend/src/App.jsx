@@ -42,6 +42,17 @@ const App = () => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
   }, []);
 
+  if (!user) {
+    return (
+      <LoginForm
+        username={username}
+        password={password}
+        handleLogin={handleLogin}
+        handleUsernameChange={handleUsernameChange}
+        handlePasswordChange={handlePasswordChange}
+      />
+    );
+  }
   return (
     <div>
       {errorMessage && (
@@ -50,17 +61,8 @@ const App = () => {
       {successMessage && (
         <Notification message={successMessage} className="success" />
       )}
-      {!user && (
-        <LoginForm
-          username={username}
-          password={password}
-          handleLogin={handleLogin}
-          handleUsernameChange={handleUsernameChange}
-          handlePasswordChange={handlePasswordChange}
-        />
-      )}
-      {user && <h3>{user.name} is logged in.</h3>}
       <h2>Blogs</h2>
+      {user && <h3>{user.name} is logged in.</h3>}
       {blogs.map((blog) => (
         <Blog key={blog.id} blog={blog} />
       ))}
