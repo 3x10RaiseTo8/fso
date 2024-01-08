@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Blog from './components/Blog';
 import LoginForm from './components/LoginForm';
+import BlogForm from './components/BlogForm';
 import Notification from './components/Notification';
 import blogService from './services/blogs';
 import loginService from './services/login';
@@ -8,13 +9,20 @@ import loginService from './services/login';
 const App = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [user, setUser] = useState(null);
+  const [title, setTitle] = useState('');
+  const [author, setAuthor] = useState('');
+  const [url, setUrl] = useState('');
   const [blogs, setBlogs] = useState([]);
+  const [user, setUser] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
 
   const handleUsernameChange = (e) => setUsername(e.target.value);
   const handlePasswordChange = (e) => setPassword(e.target.value);
+  const handleTitleChange = (e) => setTitle(e.target.value);
+  const handleAuthorChange = (e) => setAuthor(e.target.value);
+  const handleUrlChange = (e) => setUrl(e.target.value);
+
   const handleLogout = () => {
     window.localStorage.removeItem('loggedInUser');
     setUser(null);
@@ -41,6 +49,12 @@ const App = () => {
       }, 3000);
       console.log('Wrong credentials');
     }
+  };
+
+  const handleCreate = async (e) => {
+    e.preventDefault();
+    const response = await blogService.createBlog({ title, author, url });
+    setBlogs(blogs.concat(response));
   };
 
   useEffect(() => {
@@ -75,13 +89,24 @@ const App = () => {
       {successMessage && (
         <Notification message={successMessage} className="success" />
       )}
+
+      <BlogForm
+        author={author}
+        title={title}
+        url={url}
+        handleAuthorChange={handleAuthorChange}
+        handleTitleChange={handleTitleChange}
+        handleUrlChange={handleUrlChange}
+        handleCreate={handleCreate}
+      />
       <h2>Blogs</h2>
       {user && (
         <div>
-          {user.name} is logged in.{' '}
+          {user.name} is logged in
           <button onClick={handleLogout}>Logout</button>
         </div>
       )}
+      <hr></hr>
       {blogs.map((blog) => (
         <Blog key={blog.id} blog={blog} />
       ))}
