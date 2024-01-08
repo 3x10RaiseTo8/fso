@@ -15,11 +15,16 @@ const App = () => {
 
   const handleUsernameChange = (e) => setUsername(e.target.value);
   const handlePasswordChange = (e) => setPassword(e.target.value);
+  const handleLogout = () => {
+    window.localStorage.removeItem('loggedInUser');
+    setUser(null);
+  };
 
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
       const response = await loginService.login({ username, password });
+      window.localStorage.setItem('loggedInUser', JSON.stringify(response));
       blogService.setToken(response.token);
       setUser(response);
       setUsername('');
@@ -42,6 +47,15 @@ const App = () => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
   }, []);
 
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedInUser');
+    if (loggedUserJSON) {
+      const loggedUser = JSON.parse(loggedUserJSON);
+      setUser(loggedUser);
+      blogService.setToken(loggedUser.token);
+    }
+  }, []);
+
   if (!user) {
     return (
       <LoginForm
@@ -62,7 +76,12 @@ const App = () => {
         <Notification message={successMessage} className="success" />
       )}
       <h2>Blogs</h2>
-      {user && <h3>{user.name} is logged in.</h3>}
+      {user && (
+        <div>
+          {user.name} is logged in.{' '}
+          <button onClick={handleLogout}>Logout</button>
+        </div>
+      )}
       {blogs.map((blog) => (
         <Blog key={blog.id} blog={blog} />
       ))}
