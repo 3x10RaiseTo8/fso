@@ -7,36 +7,22 @@ import blogService from './services/blogs';
 import loginService from './services/login';
 
 const App = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('');
-  const [url, setUrl] = useState('');
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
-
-  const handleUsernameChange = (e) => setUsername(e.target.value);
-  const handlePasswordChange = (e) => setPassword(e.target.value);
-  const handleTitleChange = (e) => setTitle(e.target.value);
-  const handleAuthorChange = (e) => setAuthor(e.target.value);
-  const handleUrlChange = (e) => setUrl(e.target.value);
 
   const handleLogout = () => {
     window.localStorage.removeItem('loggedInUser');
     setUser(null);
   };
 
-  const handleLogin = async (event) => {
-    event.preventDefault();
+  const sendLogin = async (credentials) => {
     try {
-      const response = await loginService.login({ username, password });
+      const response = await loginService.login(credentials);
       window.localStorage.setItem('loggedInUser', JSON.stringify(response));
       blogService.setToken(response.token);
       setUser(response);
-      setUsername('');
-      setPassword('');
       setSuccessMessage(`Welcome, ${response.name}!`);
       setTimeout(() => {
         setSuccessMessage(null);
@@ -51,10 +37,9 @@ const App = () => {
     }
   };
 
-  const handleCreate = async (e) => {
-    e.preventDefault();
+  const createBlog = async (blogObject) => {
     try {
-      const response = await blogService.createBlog({ title, author, url });
+      const response = await blogService.createBlog(blogObject);
       setBlogs(blogs.concat(response));
       setSuccessMessage(
         `A new blog "${response.title}" by "${
@@ -91,13 +76,7 @@ const App = () => {
         {errorMessage && (
           <Notification message={errorMessage} className="error" />
         )}
-        <LoginForm
-          username={username}
-          password={password}
-          handleLogin={handleLogin}
-          handleUsernameChange={handleUsernameChange}
-          handlePasswordChange={handlePasswordChange}
-        />
+        <LoginForm sendLogin={sendLogin} />
       </div>
     );
   }
@@ -110,15 +89,7 @@ const App = () => {
         <Notification message={successMessage} className="success" />
       )}
 
-      <BlogForm
-        author={author}
-        title={title}
-        url={url}
-        handleAuthorChange={handleAuthorChange}
-        handleTitleChange={handleTitleChange}
-        handleUrlChange={handleUrlChange}
-        handleCreate={handleCreate}
-      />
+      <BlogForm createBlog={createBlog} />
       <h2>Blogs</h2>
       {user && (
         <div>
