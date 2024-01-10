@@ -46,7 +46,8 @@ const App = () => {
   const createBlog = async (blogObject) => {
     try {
       const response = await blogService.createBlog(blogObject);
-      setBlogs(blogs.concat(response));
+      const newBlogs = await blogService.getAll();
+      setBlogs(newBlogs);
       noteFormRef.current.toggleVisibility();
       setSuccessMessage(
         `A new blog "${response.title}" by "${
@@ -66,7 +67,9 @@ const App = () => {
 
   // Effects
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
+    blogService.getAll().then((blogs) => {
+      setBlogs(blogs);
+    });
   }, []);
 
   useEffect(() => {
