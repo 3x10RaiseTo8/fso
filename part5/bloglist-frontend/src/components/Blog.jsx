@@ -5,16 +5,19 @@ const Blog = ({ blog, handleLike }) => {
 
   const label = view ? 'Hide' : 'Show';
 
-  const handleView = () => {
-    console.log(view, label);
-    setView(!view);
+  const blogStyle = {
+    paddingTop: 10,
+    paddingLeft: 2,
+    border: 'solid',
+    borderWidth: 1,
+    marginBottom: 5,
   };
 
   return (
-    <div>
+    <div style={blogStyle}>
       <p>
         {blog.title} - {blog.author}{' '}
-        <button onClick={handleView}>{label}</button>
+        <button onClick={() => setView(!view)}>{label}</button>
       </p>
       {view && (
         <div>
