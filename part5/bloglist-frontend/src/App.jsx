@@ -53,7 +53,6 @@ const App = () => {
       setTimeout(() => {
         setErrorMessage(null);
       }, 3000);
-      console.log('Wrong credentials');
     }
   };
 
@@ -83,7 +82,6 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then((blogs) => {
       setBlogs(blogs);
-      console.log(blogs);
     });
   }, []);
 
@@ -92,7 +90,6 @@ const App = () => {
     if (loggedUserJSON) {
       const loggedUser = JSON.parse(loggedUserJSON);
       setUser(loggedUser);
-      console.log(loggedUser);
       blogService.setToken(loggedUser.token);
     }
   }, []);
