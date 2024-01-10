@@ -23,6 +23,14 @@ const App = () => {
     setUser(null);
   };
 
+  const removeBlog = async (blogToDelete) => {
+    const { id, title } = blogToDelete;
+    if (window.confirm(`Are you sure you want to delete "${title}"?`)) {
+      await blogService.deleteBlog(id);
+      setBlogs(blogs.filter((b) => b.id !== id));
+    }
+  };
+
   const addLike = async (newBlogObject, blogId) => {
     await blogService.updateBlog(newBlogObject, blogId);
     const newBlogs = await blogService.getAll();
@@ -84,6 +92,7 @@ const App = () => {
     if (loggedUserJSON) {
       const loggedUser = JSON.parse(loggedUserJSON);
       setUser(loggedUser);
+      console.log(loggedUser);
       blogService.setToken(loggedUser.token);
     }
   }, []);
@@ -128,7 +137,13 @@ const App = () => {
       {blogs
         .toSorted((a, b) => b.likes - a.likes)
         .map((blog) => (
-          <Blog key={blog.id} blog={blog} addLike={addLike} />
+          <Blog
+            key={blog.id}
+            blog={blog}
+            loggedUser={user}
+            removeBlog={removeBlog}
+            addLike={addLike}
+          />
         ))}
     </div>
   );

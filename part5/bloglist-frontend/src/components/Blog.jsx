@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const Blog = ({ blog, addLike }) => {
+const Blog = ({ blog, loggedUser, addLike, removeBlog }) => {
   const { title, url, author, likes, user, id } = blog;
 
   const blogStyle = {
@@ -13,10 +13,13 @@ const Blog = ({ blog, addLike }) => {
 
   const [view, setView] = useState(false);
   const label = view ? 'Hide' : 'Show';
+  const isOwner = loggedUser.username === user.username ? true : false;
 
   const handleLike = () => {
     addLike({ title, url, author, likes: likes + 1 }, id);
   };
+
+  const handleDelete = () => removeBlog(blog);
 
   return (
     <div style={blogStyle}>
@@ -32,7 +35,10 @@ const Blog = ({ blog, addLike }) => {
           <p>
             Likes {likes} <button onClick={handleLike}>Like</button>
           </p>
-          <p>Added by {user.name}</p>
+          <p>
+            Added by {user.name}{' '}
+            {isOwner && <button onClick={handleDelete}>Delete</button>}
+          </p>
         </div>
       )}
     </div>
