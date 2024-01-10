@@ -23,6 +23,12 @@ const App = () => {
     setUser(null);
   };
 
+  const addLike = async (newBlogObject, blogId) => {
+    await blogService.updateBlog(newBlogObject, blogId);
+    const newBlogs = await blogService.getAll();
+    setBlogs(newBlogs);
+  };
+
   const sendLogin = async (credentials) => {
     try {
       const response = await loginService.login(credentials);
@@ -119,7 +125,7 @@ const App = () => {
       <hr />
 
       {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} addLike={addLike} />
       ))}
     </div>
   );
