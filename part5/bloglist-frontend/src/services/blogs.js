@@ -22,11 +22,7 @@ const createBlog = async (newBlogObject) => {
 };
 
 const updateBlog = async (newBlogObject, blogId) => {
-  const response = await axios.put(
-    `${baseUrl}/${blogId}`,
-    newBlogObject,
-    config
-  );
+  const response = await axios.put(`${baseUrl}/${blogId}`, newBlogObject);
   return response.data;
 };
 
