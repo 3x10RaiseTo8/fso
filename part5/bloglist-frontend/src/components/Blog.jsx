@@ -23,22 +23,29 @@ const Blog = ({ blog, loggedUser, addLike, removeBlog }) => {
   const handleDelete = () => removeBlog(blog);
 
   return (
-    <div style={blogStyle}>
-      <p>
+    <div style={blogStyle} className="singleBlog">
+      <p className="visibleContent">
         {title} - {author}{' '}
         <button onClick={() => setView(!view)}>{label}</button>
       </p>
       {view && (
-        <div>
+        <div className="hiddenContent">
           <p>
             <a href={url}>{url}</a>
           </p>
           <p>
-            Likes {likes} <button onClick={handleLike}>Like</button>
+            Likes {likes}{' '}
+            <button className="likeButton" onClick={handleLike}>
+              Like
+            </button>
           </p>
           <p>
             Added by {user.name}{' '}
-            {isOwner && <button onClick={handleDelete}>Delete</button>}
+            {isOwner && (
+              <button onClick={handleDelete} className="deleteButton">
+                Delete
+              </button>
+            )}
           </p>
         </div>
       )}
